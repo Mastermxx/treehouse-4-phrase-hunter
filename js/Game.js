@@ -18,15 +18,16 @@ class Game {
         return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
     };
 
+    // this method randomly retrieves one of the phrases stored in the phrases array and returns it.
+    getRandomPhrase() {
+        const randomNumber = Math.floor(Math.random() * this.phrases.length)
+        return this.phrases[randomNumber];
+    };
+
     startGame() {
         // hides the start screen overlay
         // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
-    };
-
-    // this method randomly retrieves one of the phrases stored in the phrases array and returns it.
-    getRandomPhrase() {
-
     };
 
     // this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
