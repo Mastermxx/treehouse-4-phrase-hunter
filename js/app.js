@@ -3,7 +3,9 @@
  * app.js */
 console.log('app.js is loaded');
 
-const game = new Game();
-game.startGame();
+const startGameButton = document.querySelector('#btn__reset')
 
-console.log(`Active Phrase - phrase: ${game.activePhrase}`);
+startGameButton.addEventListener('click', function() {
+    const game = new Game();
+    game.startGame();
+})
