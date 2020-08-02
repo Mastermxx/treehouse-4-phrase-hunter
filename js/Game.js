@@ -4,9 +4,9 @@
 console.log('Game.js is loaded');
 
 class Game {
-    constructor(missed, phrases, activePhrase) {
+    constructor() {
         this.missed = 0;
-        this.phrases = phrases;
+        this.phrases = [];
         this.activePhrase = null;
     }
 
