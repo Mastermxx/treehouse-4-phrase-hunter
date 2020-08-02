@@ -8,4 +8,5 @@ const startGameButton = document.querySelector('#btn__reset')
 startGameButton.addEventListener('click', function() {
     const game = new Game();
     game.startGame();
+    game.handleInteraction();
 })
