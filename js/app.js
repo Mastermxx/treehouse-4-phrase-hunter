@@ -4,20 +4,7 @@
 console.log('app.js is loaded');
 
 // const game = new Game();
+// const randomPhrase = game.getRandomPhrase();
 //
-// game.phrases.map((phrase, index) => {
-//     console.log(`Phrase ${index} - phrase: ${phrase}`);
-// });
-
-// console.log(game.getRandomPhrase())
-
-
-// const logPhrase = (phrase) => {
-//     console.log(`Phrase - phrase: `, phrase);
-// };
-// const game = new Game();
-// logPhrase(game.getRandomPhrase());
-// logPhrase(game.getRandomPhrase());
-// logPhrase(game.getRandomPhrase());
-// logPhrase(game.getRandomPhrase());
-// logPhrase(game.getRandomPhrase());
+// const phrase = new Phrase(randomPhrase);
+// phrase.addPhraseToDisplay();
