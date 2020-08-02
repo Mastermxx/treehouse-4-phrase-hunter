@@ -3,8 +3,7 @@
  * app.js */
 console.log('app.js is loaded');
 
-// const game = new Game();
-// const randomPhrase = game.getRandomPhrase();
-//
-// const phrase = new Phrase(randomPhrase);
-// phrase.addPhraseToDisplay();
+const game = new Game();
+game.startGame();
+
+console.log(`Active Phrase - phrase: ${game.activePhrase}`);

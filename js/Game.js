@@ -24,10 +24,17 @@ class Game {
         return this.phrases[randomNumber];
     };
 
+    /**
+     * Begins game by selecting a random phrase and displaying it to user
+     */
     startGame() {
         // hides the start screen overlay
+        document.querySelector('#overlay').style.display = 'none';
         // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
+        this.activePhrase = this.getRandomPhrase();
         // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
+        const phrase = new Phrase(this.activePhrase);
+        phrase.addPhraseToDisplay();
     };
 
     // this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
