@@ -4,11 +4,19 @@
 console.log('Game.js is loaded');
 
 class Game {
-    constructor() {
+    constructor(missed, phrases, activePhrase) {
         this.missed = 0;
-        this.phrases = [];
+        this.phrases = this.createPhrases();
         this.activePhrase = null;
     }
+
+    /**
+     * Creates phrases for use in game
+     * @return {array} An array of phrases that could be used in the game
+     */
+    createPhrases() {
+        return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
+    };
 
     startGame() {
         // hides the start screen overlay

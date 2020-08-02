@@ -5,7 +5,8 @@ console.log('Phrase.js is loaded');
 
 class Phrase {
     constructor(phrase) {
-        this.phrase = phrase.toLowerCase();
+        this.phrase = phrase;
+        // this.phrases = phrases;
         // this.chars = this.phrase.split('');
     }
 
