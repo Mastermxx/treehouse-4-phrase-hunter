@@ -5,8 +5,8 @@ console.log('Phrase.js is loaded');
 
 class Phrase {
     constructor(phrase) {
-        this.phrase = phrase.toLowerCase();
-        this.chars = this.phrase.split('')
+        // this.phrase = phrase.toLowerCase();
+        // this.chars = this.phrase.split('');
     }
 
     // this adds letter placeholders to the display when the game starts.
