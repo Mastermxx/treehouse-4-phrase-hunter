@@ -67,6 +67,7 @@ class Game {
         key.forEach(key => {
             key.addEventListener('click', (event) => {
                 this.registerInput(key);
+                key.disabled = 'false';
             });
         });
 
