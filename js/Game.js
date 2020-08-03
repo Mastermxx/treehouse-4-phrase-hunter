@@ -72,7 +72,7 @@ class Game {
     removeLife() {
         this.missed += 1;
         if (this.missed === 5) this.gameOver();
-        else heartIcons[this.missed - 1].src = '.././images/lostHeart.png';
+        else heartIcons[this.missed - 1].src = '/images/lostHeart.png';
     };
 
 
@@ -102,7 +102,7 @@ class Game {
         winLoseMessage.innerHTML = '';
 
         // reset the heart icons into live hearts
-        heartIcons.forEach(heart => heart.src = '../phrase-hunter/images/liveHeart.png');
+        heartIcons.forEach(heart => heart.src = '/images/liveHeart.png');
 
         // show the overlay
         overlayDiv.style.display = 'flex';
