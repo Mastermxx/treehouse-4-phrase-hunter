@@ -15,8 +15,6 @@ class Game {
         this.activePhrase = null;
     }
 
-
-
      // * Creates phrases for use in game
      // * @return {array} An array of phrases that could be used in the game
     createPhrases() {
@@ -32,7 +30,6 @@ class Game {
     // * Begins game by selecting a random phrase and displaying it to user
     startGame() {
         this.missed = 0;
-        console.log(this.missed)
         // done - hides the start screen overlay
         overlayDiv.style.display = 'none';
         // done - calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
@@ -43,29 +40,50 @@ class Game {
         this.phrase.addPhraseToDisplay();
     };
 
+    registerInput(input) {
+
+        console.log(input)
+        const key = input.innerHTML
+
+        if (this.phrase.checkLetter(key)) {
+            this.phrase.showMatchedLetter(key);
+            
+            input.classList.add('chosen');
+            this.checkForWin()
+
+        } else {
+
+            input.classList.add('wrong');
+            this.removeLife();
+        }
+    }
+
     // done - this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
     // and then directs the game based on a correct or incorrect guess. This method should:
     // done - Disable the selected letter’s onscreen keyboard button.
     // done - If the phrase does not include the guessed letter, add the wrong CSS class to the selected letter's keyboard button and call the removeLife() method.
-    // If the phrase includes the guessed letter, add the chosen CSS class to the selected letter's keyboard button,
+    // done - If the phrase includes the guessed letter, add the chosen CSS class to the selected letter's keyboard button,
     // done - call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
-    // If the player has won the game, also call the gameOver() method.
+    // done - If the player has won the game, also call the gameOver() method.
     handleInteraction() {
-        let phrase = this.phrase;
-        for (let i = 0; i < key.length; i++) {
-            key[i].addEventListener('click', (event) => {
-                const input = key[i].innerHTML;
-                key[i].disabled = 'false'
-                if (phrase.checkLetter(input)) {
-                    phrase.showMatchedLetter(input);
-                    key[i].classList.add('chosen');
-                    this.checkForWin()
-                } else {
-                    key[i].classList.add('wrong');
-                    this.removeLife();
-                }
-            })
-        }
+        
+        key.forEach(key => {
+            console.log(key)
+            key.classList.add(`key${key.innerHTML}`);
+        });
+
+        key.forEach(key => {
+            key.addEventListener('click', (event) => {
+                this.registerInput(key);
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            let key = event.code.toLowerCase();
+            key = document.querySelector(`.${key}`);
+            this.registerInput(key);
+        });
+        
     };
 
     // * Increases the value of the missed property
@@ -108,19 +126,16 @@ class Game {
 
         // show the overlay
         overlayDiv.style.display = 'flex';
-        // overlayDiv.classList.add('win')
-        // add a win or lose message
-
 
         // based on win or lose add a lose or win class to the main-container
+        // also add a message on the overlay if the player won or lost.
         if (this.winOrLose === true) {
             overlayDiv.classList.add('win')
-            winLoseMessage.innerHTML += `Grats you win this time! :)`
+            winLoseMessage.innerHTML += `Congrats you win this time! :)`
         } else {
             overlayDiv.classList.add('lose')
             winLoseMessage.innerHTML += `You lose, better luck next time :(`
         }
-
 
         key.forEach(key => {
             key.removeAttribute('disabled');
