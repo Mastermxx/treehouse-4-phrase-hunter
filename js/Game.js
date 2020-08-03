@@ -122,7 +122,10 @@ class Game {
         }
 
 
-        key.forEach(key => key.removeAttribute("disabled"));
+        key.forEach(key => {
+            key.removeAttribute('disabled');
+            key.classList.remove('wrong', 'chosen');
+        });
 
         // return this.missed = 0;
     }
