@@ -72,7 +72,7 @@ class Game {
     removeLife() {
         this.missed += 1;
         if (this.missed === 5) this.gameOver();
-        else heartIcons[this.missed - 1].src = '../phrase-hunter/images/lostHeart.png';
+        else heartIcons[this.missed - 1].src = '.././images/lostHeart.png';
     };
 
 
