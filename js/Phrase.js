@@ -1,4 +1,4 @@
-/* Treehouse FSJS Techdegree
+/* Treehouse FSJS Techdegre
  * Project 4 - OOP Game App
  * Phrase.js */
 console.log('Phrase.js is loaded');
