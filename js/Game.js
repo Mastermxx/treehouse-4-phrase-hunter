@@ -34,25 +34,18 @@ class Game {
         overlayDiv.style.display = 'none';
         // done - calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         this.activePhrase = this.getRandomPhrase();
-        console.log(`phrase length: ${this.activePhrase.length}`)
         // done - It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
         this.phrase = new Phrase(this.activePhrase);
         this.phrase.addPhraseToDisplay();
     };
 
     registerInput(input) {
-
-        console.log(input)
         const key = input.innerHTML
-
         if (this.phrase.checkLetter(key)) {
             this.phrase.showMatchedLetter(key);
-            
             input.classList.add('chosen');
             this.checkForWin()
-
         } else {
-
             input.classList.add('wrong');
             this.removeLife();
         }
@@ -66,9 +59,8 @@ class Game {
     // done - call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
     // done - If the player has won the game, also call the gameOver() method.
     handleInteraction() {
-        
+
         key.forEach(key => {
-            console.log(key)
             key.classList.add(`key${key.innerHTML}`);
         });
 
@@ -83,7 +75,7 @@ class Game {
             key = document.querySelector(`.${key}`);
             this.registerInput(key);
         });
-        
+
     };
 
     // * Increases the value of the missed property
@@ -141,8 +133,5 @@ class Game {
             key.removeAttribute('disabled');
             key.classList.remove('wrong', 'chosen');
         });
-
-        // return this.missed = 0;
     }
-
 }
