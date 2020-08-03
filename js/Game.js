@@ -15,13 +15,10 @@ class Game {
         this.activePhrase = null;
     }
 
-    /**
-     * Creates phrases for use in game
-     * @return {array} An array of phrases that could be used in the game
-     */
+     // * Creates phrases for use in game
+     // * @return {array} An array of phrases that could be used in the game
     createPhrases() {
-        // return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
-        return ['greatest'];
+        return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
     };
 
     // done - this method randomly retrieves one of the phrases stored in the phrases array and returns it.
@@ -30,9 +27,7 @@ class Game {
         return this.phrases[randomNumber];
     };
 
-    /**
-     * Begins game by selecting a random phrase and displaying it to user
-     */
+    // * Begins game by selecting a random phrase and displaying it to user
     startGame() {
         // done - hides the start screen overlay
         overlayDiv.style.display = 'none';
@@ -60,8 +55,12 @@ class Game {
 
             key[i].addEventListener('click', (event) => {
 
+
+
                 const input = key[i].innerHTML;
                 key[i].disabled = 'false'
+
+                console.log(key[i])
 
                 if (phrase.checkLetter(input)) {
                     phrase.showMatchedLetter(input)
@@ -75,13 +74,11 @@ class Game {
 
     };
 
-    // this method removes a life from the scoreboard, by replacing one of the liveHeart.png
-    // images with a lostHeart.png image (found in the images folder) and increments the missed property.
-    // If the player has five missed guesses (i.e they're out of lives), then end the game by calling the gameOver() method.
+    // * Increases the value of the missed property
+    // * Removes a life from the scoreboard
+    // * Checks if player has remaining lives and ends game if player is out
     removeLife() {
-
         console.log(`missed: ${this.missed + 1}`)
-
         if (this.missed === 4) {
             this.gameOver();
         } else {
@@ -90,29 +87,41 @@ class Game {
         }
     };
 
-    checkForWin() {
 
+    // * Checks for winning move
+    // * @return {boolean} True if game has been won, false if game wasn't won
+    //!!! needs fixing boolean instead of message
+    checkForWin() {
         const shownLetters = document.querySelectorAll('.show');
         const phraseLength = this.activePhrase.length;
         if (phraseLength === shownLetters.length) {
             console.log('you won!')
         }
-
-
-
-        // this method checks to see if the player has revealed all of the letters in the active phrase.
     };
 
     // this method displays the original start screen overlay, and depending on the outcome of the game,
     // updates the overlay h1 element with a friendly win or loss message,
     // and replaces the overlay’s start CSS class with either the win or lose CSS class.
     gameOver() {
+
+        // empty the phrase div to make room for a new phrase
+        phraseDiv.innerHTML = '';
+
+        // reset the heart icons into live hearts
+        heartIcons.forEach(heart => heart.src = '../phrase-hunter/images/liveHeart.png');
+
+        // show the overlay
         overlayDiv.style.display = 'flex';
+
+        // add a win or lose message
         winLoseMessage.innerHTML =
             `unlucky, you lose :( <br>
             <span>the correct phrase was : "${this.activePhrase}"</span>`;
 
+        // based on win or lose add a lose or win class to the main-container
         overlayDiv.classList.add('lose')
+
+        key.forEach(key => key.removeAttribute("disabled"));
     }
 
 }

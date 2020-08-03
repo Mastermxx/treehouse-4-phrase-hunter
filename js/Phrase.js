@@ -21,14 +21,16 @@ class Phrase {
             })
     }
 
-    // done - checks to see if the letter selected by the player matches a letter in the phrase.
+    // * Checks if passed letter is in phrase
+    // * @param (string) letter - Letter to check
+    // * @return {boolean} True if letter is in phrase
     checkLetter(input) {
         return this.chars.includes(input)
     }
 
-    // done - reveals the letter(s) on the board that matches the player's selection. To reveal the matching letter(s),
-    // done - select all of the letter DOM elements that have a CSS class name that matches the selected letter and
-    // done - replace each selected element's hide CSS class with the show CSS class.
+
+     // * Displays passed letter on screen after a match is found
+     // * @param (string) letter - Letter to display
     showMatchedLetter(input) {
         const getCorrectLetter = document.getElementsByClassName(input);
         for (let i =0; i < getCorrectLetter.length; i++) {
