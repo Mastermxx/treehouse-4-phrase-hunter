@@ -57,9 +57,11 @@ class Game {
                 const input = key[i].innerHTML;
                 key[i].disabled = 'false'
                 if (phrase.checkLetter(input)) {
-                    phrase.showMatchedLetter(input)
+                    phrase.showMatchedLetter(input);
+                    key[i].classList.add('chosen');
                     this.checkForWin()
                 } else {
+                    key[i].classList.add('wrong');
                     this.removeLife();
                 }
             })
