@@ -13,6 +13,7 @@ class Game {
         this.missed = 0;
         this.phrases = this.createPhrases();
         this.activePhrase = null;
+        this.isAvailable = false;
     }
 
      // * Creates phrases for use in game
@@ -29,6 +30,7 @@ class Game {
 
     // * Begins game by selecting a random phrase and displaying it to user
     startGame() {
+        this.isAvailable = true;
         this.missed = 0;
         // done - hides the start screen overlay
         overlayDiv.style.display = 'none';
@@ -69,20 +71,20 @@ class Game {
             });
         });
 
-        document.addEventListener('keydown', (event) => {
-            let key = event.code.toLowerCase();
-            key = document.querySelector(`.${key}`);
-            event.preventDefault();
-            console.log(key)
-            this.registerInput(key);
-        });
-        
-        // op werk oplossing
         // document.addEventListener('keydown', (event) => {
-        //     let keyboardKey = event.code.toLowerCase().slice(3);
-        //     keyboardKey = document.querySelector(`.key${keyboardKey}`);
-        //     this.registerInput(keyboardKey);
+        //     let key = event.code.toLowerCase();
+        //     key = document.querySelector(`.${key}`);
+        //     console.log(key)
+        //     this.registerInput(key);
         // });
+
+        document.addEventListener('keydown', (event) => {
+            if (this.isAvailable) {
+                let keyboardKey = event.code.toLowerCase().slice(3);
+                keyboardKey = document.querySelector(`.key${keyboardKey}`);
+                this.registerInput(keyboardKey);
+            }
+        });
 
     };
 
@@ -143,7 +145,7 @@ class Game {
         }
 
         key.forEach(key => {
-            key.removeAttribute('disabled');
+            key.disabled = 'true';
             key.classList.remove('wrong', 'chosen');
         });
 
