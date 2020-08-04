@@ -84,9 +84,12 @@ class Game {
 
         console.log(this.missed);
         // this.missed += 1;
-        if (this.missed === 5) this.gameOver();
-        else heartIcons[this.missed].src = 'images/lostHeart.png';
-        this.missed = this.missed + 1;
+        if (this.missed === 5){
+            this.gameOver();
+        } else {
+            heartIcons[this.missed].src = 'images/lostHeart.png';
+            this.missed = this.missed + 1;
+        }
     };
 
 
@@ -112,6 +115,7 @@ class Game {
     gameOver() {
         // empty the phrase div to make room for a new phrase
         phraseDiv.innerHTML = '';
+        // this.phrase = '';
         winLoseMessage.innerHTML = '';
         overlayDiv.classList.remove('win', 'lose');
 
@@ -122,8 +126,6 @@ class Game {
 
         // reset the heart icons into live hearts
         heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
-
-
 
         // show the overlay
         overlayDiv.style.display = 'flex';
