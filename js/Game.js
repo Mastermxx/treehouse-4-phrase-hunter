@@ -1,12 +1,10 @@
 /* Treehouse FSJS Techdegree
  * Project 4 - OOP Game App
  * Game.js */
-console.log('Game.js is loaded');
-
 const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
 const key = document.querySelectorAll('.key');
-let winLoseMessage = document.querySelector('#game-over-message');
+const winLoseMessage = document.querySelector('#game-over-message');
 
 class Game {
     constructor() {
@@ -54,35 +52,33 @@ class Game {
         }
     }
 
-    // done - this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
+    // this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
     // and then directs the game based on a correct or incorrect guess. This method should:
-    // done - Disable the selected letter’s onscreen keyboard button.
-    // done - If the phrase does not include the guessed letter, add the wrong CSS class to the selected letter's keyboard button and call the removeLife() method.
-    // done - If the phrase includes the guessed letter, add the chosen CSS class to the selected letter's keyboard button,
-    // done - call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
-    // done - If the player has won the game, also call the gameOver() method.
+    // Disable the selected letter’s onscreen keyboard button.
+    // If the phrase does not include the guessed letter, add the wrong CSS class to the selected letter's keyboard button and call the removeLife() method.
+    // If the phrase includes the guessed letter, add the chosen CSS class to the selected letter's keyboard button,
+    // call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
+    // If the player has won the game, also call the gameOver() method.
     handleInteraction() {
-
         key.forEach(key => {
-            key.classList.add(`key${key.innerHTML}`);
             key.addEventListener('click', (event) => {
                 this.registerInput(key);
-                key.disabled = 'false'
+                key.disabled = true;
             });
         });
 
-        // document.addEventListener('keydown', (event) => {
-        //     let key = event.code.toLowerCase();
-        //     key = document.querySelector(`.${key}`);
-        //     console.log(key)
-        //     this.registerInput(key);
-        // });
-
         document.addEventListener('keydown', (event) => {
             if (this.isAvailable) {
-                let keyboardKey = event.code.toLowerCase().slice(3);
-                keyboardKey = document.querySelector(`.key${keyboardKey}`);
-                this.registerInput(keyboardKey);
+
+                const string = event.code;
+                const currentKey = string.toLowerCase().slice(3);
+                const regex = /[a-z]/g;
+
+                if (currentKey.match(regex) && string.length === 4) {
+                    const allKeys = Array.from(key);
+                    const keyElement = allKeys.find(k => k.innerHTML === currentKey);
+                    this.registerInput(keyElement);
+                }
             }
         });
 
@@ -92,36 +88,33 @@ class Game {
     // * Removes a life from the scoreboard
     // * Checks if player has remaining lives and ends game if player is out
     removeLife() {
-        console.log(this.missed);
-        if (this.missed === 5){
+        if (this.missed === 4){
             this.gameOver();
         } else {
             heartIcons[this.missed].src = 'images/lostHeart.png';
-            this.missed = this.missed + 1;
+            this.missed += 1;
         }
     };
 
 
     // * Checks for winning move
     // * @return {boolean} True if game has been won, false if game wasn't won
-    //!!! needs fixing boolean instead of message
     checkForWin() {
         const shownLetters = document.querySelectorAll('.show');
         const spaces = document.querySelectorAll('.space');
         const phraseLength = this.activePhrase.length;
 
-        this.winOrLose = phraseLength === shownLetters.length + spaces.length;
+        const gameWon = phraseLength === shownLetters.length + spaces.length;
 
         if (phraseLength === shownLetters.length + spaces.length) {
-            this.gameOver()
-            return this.winOrLose;
+            this.gameOver(gameWon)
         }
     }
 
     // this method displays the original start screen overlay, and depending on the outcome of the game,
     // updates the overlay h1 element with a friendly win or loss message,
     // and replaces the overlay’s start CSS class with either the win or lose CSS class.
-    gameOver() {
+    gameOver(gameWon) {
 
         // empty the phrase div to make room for a new phrase
         phraseDiv.innerHTML = '';
@@ -136,7 +129,7 @@ class Game {
 
         // based on win or lose add a lose or win class to the main-container
         // also add a message on the overlay if the player won or lost.
-        if (this.winOrLose === true) {
+        if (gameWon) {
             overlayDiv.classList.add('win')
             winLoseMessage.innerHTML += `Congrats you win this time! :)`
         } else {
@@ -145,7 +138,7 @@ class Game {
         }
 
         key.forEach(key => {
-            key.disabled = 'true';
+            key.disabled = false;
             key.classList.remove('wrong', 'chosen');
         });
 
