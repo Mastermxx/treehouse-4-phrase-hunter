@@ -3,7 +3,7 @@
  * Game.js */
 console.log('Game.js is loaded');
 
-const overlayDiv = document.querySelector('#overlay');
+const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
 const key = document.querySelectorAll('.key');
 let winLoseMessage = document.querySelector('#game-over-message');
@@ -23,7 +23,7 @@ class Game {
 
     // done - this method randomly retrieves one of the phrases stored in the phrases array and returns it.
     getRandomPhrase() {
-        const randomNumber = Math.floor(Math.random() * this.phrases.length);
+        const randomNumber = Math.floor(Math.random() * this.phrases.length)
         return this.phrases[randomNumber];
     };
 
@@ -41,7 +41,7 @@ class Game {
     };
 
     registerInput(input) {
-        const key = input.innerHTML;
+        const key = input.innerHTML
         if (this.phrase.checkLetter(key)) {
             this.phrase.showMatchedLetter(key);
             input.classList.add('chosen');
@@ -65,15 +65,24 @@ class Game {
             key.classList.add(`key${key.innerHTML}`);
             key.addEventListener('click', (event) => {
                 this.registerInput(key);
-                key.disabled = 'false';
+                key.disabled = 'false'
             });
         });
 
         document.addEventListener('keydown', (event) => {
-            let keyboardKey = event.code.toLowerCase().slice(3);
-            keyboardKey = document.querySelector(`.key${keyboardKey}`);
-            this.registerInput(keyboardKey);
+            let key = event.code.toLowerCase();
+            key = document.querySelector(`.${key}`);
+            event.preventDefault();
+            console.log(key)
+            this.registerInput(key);
         });
+        
+        // op werk oplossing
+        // document.addEventListener('keydown', (event) => {
+        //     let keyboardKey = event.code.toLowerCase().slice(3);
+        //     keyboardKey = document.querySelector(`.key${keyboardKey}`);
+        //     this.registerInput(keyboardKey);
+        // });
 
     };
 
@@ -81,9 +90,7 @@ class Game {
     // * Removes a life from the scoreboard
     // * Checks if player has remaining lives and ends game if player is out
     removeLife() {
-
         console.log(this.missed);
-        // this.missed += 1;
         if (this.missed === 5){
             this.gameOver();
         } else {
@@ -103,8 +110,8 @@ class Game {
 
         this.winOrLose = phraseLength === shownLetters.length + spaces.length;
 
-        if (this.winOrLose) {
-            this.gameOver();
+        if (phraseLength === shownLetters.length + spaces.length) {
+            this.gameOver()
             return this.winOrLose;
         }
     }
@@ -113,31 +120,33 @@ class Game {
     // updates the overlay h1 element with a friendly win or loss message,
     // and replaces the overlay’s start CSS class with either the win or lose CSS class.
     gameOver() {
+
         // empty the phrase div to make room for a new phrase
         phraseDiv.innerHTML = '';
-        // this.phrase = '';
         winLoseMessage.innerHTML = '';
+
+        // show the overlay
+        overlayDiv.style.display = 'flex';
         overlayDiv.classList.remove('win', 'lose');
+
+        // reset the heart icons into live hearts
+        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
+
+        // based on win or lose add a lose or win class to the main-container
+        // also add a message on the overlay if the player won or lost.
+        if (this.winOrLose === true) {
+            overlayDiv.classList.add('win')
+            winLoseMessage.innerHTML += `Congrats you win this time! :)`
+        } else {
+            overlayDiv.classList.add('lose')
+            winLoseMessage.innerHTML += `You lose, better luck next time :(`
+        }
 
         key.forEach(key => {
             key.removeAttribute('disabled');
             key.classList.remove('wrong', 'chosen');
         });
 
-        // reset the heart icons into live hearts
-        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
-
-        // show the overlay
-        overlayDiv.style.display = 'flex';
-
-        // based on win or lose add a lose or win class to the main-container
-        // also add a message on the overlay if the player won or lost.
-        if (this.winOrLose) {
-            overlayDiv.classList.add('win');
-            winLoseMessage.innerHTML += `Congrats you win this time! :)`
-        } else {
-            overlayDiv.classList.add('lose');
-            winLoseMessage.innerHTML += `You lose, better luck next time :(`
-        }
+        this.missed = 0;
     }
 }
