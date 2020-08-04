@@ -37,6 +37,7 @@ class Game {
         // done - It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
         this.phrase = new Phrase(this.activePhrase);
         this.phrase.addPhraseToDisplay();
+        console.log(this.phrase)
     };
 
     registerInput(input) {
@@ -69,9 +70,9 @@ class Game {
         });
 
         document.addEventListener('keydown', (event) => {
-            let key = event.code.toLowerCase();
-            key = document.querySelector(`.${key}`);
-            this.registerInput(key);
+            let keyboardKey = event.code.toLowerCase().slice(3);
+            keyboardKey = document.querySelector(`.key${keyboardKey}`);
+            this.registerInput(keyboardKey);
         });
 
     };
@@ -112,6 +113,7 @@ class Game {
         // empty the phrase div to make room for a new phrase
         phraseDiv.innerHTML = '';
         winLoseMessage.innerHTML = '';
+        overlayDiv.classList.remove('win', 'lose');
 
         key.forEach(key => {
             key.removeAttribute('disabled');
@@ -120,6 +122,8 @@ class Game {
 
         // reset the heart icons into live hearts
         heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
+
+
 
         // show the overlay
         overlayDiv.style.display = 'flex';
