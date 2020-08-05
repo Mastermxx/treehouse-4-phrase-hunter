@@ -5,6 +5,7 @@ const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
 const key = document.querySelectorAll('.key');
 const winLoseMessage = document.querySelector('#game-over-message');
+const startGameButton = document.querySelector('#btn__reset')
 
 class Game {
     constructor() {
@@ -20,7 +21,7 @@ class Game {
         return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
     };
 
-    // done - this method randomly retrieves one of the phrases stored in the phrases array and returns it.
+    // this method randomly retrieves one of the phrases stored in the phrases array and returns it.
     getRandomPhrase() {
         const randomNumber = Math.floor(Math.random() * this.phrases.length)
         return this.phrases[randomNumber];
@@ -30,26 +31,39 @@ class Game {
     startGame() {
         this.isAvailable = true;
         this.missed = 0;
-        // done - hides the start screen overlay
+
+        // empty the phrase div to make room for a new phrase
+        phraseDiv.innerHTML = '';
+
+        // reset the heart icons into live hearts
+        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
+
+        key.forEach(k => {
+            k.disabled = false;
+            k.classList.remove('wrong', 'chosen');
+        });
+
+        // hides the start screen overlay
         overlayDiv.style.display = 'none';
-        // done - calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
+        // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         this.activePhrase = this.getRandomPhrase();
-        // done - It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
+        // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
         this.phrase = new Phrase(this.activePhrase);
         this.phrase.addPhraseToDisplay();
         console.log(this.phrase)
     };
 
     registerInput(input) {
-        const key = input.innerHTML
-        if (this.phrase.checkLetter(key)) {
-            this.phrase.showMatchedLetter(key);
+        const letter = input.innerHTML
+        if (this.phrase.checkLetter(letter)) {
+            this.phrase.showMatchedLetter(letter);
             input.classList.add('chosen');
             this.checkForWin()
         } else {
             input.classList.add('wrong');
             this.removeLife();
         }
+        input.disabled = true;
     }
 
     // this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
@@ -60,12 +74,13 @@ class Game {
     // call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
     // If the player has won the game, also call the gameOver() method.
     handleInteraction() {
-        key.forEach(key => {
-            key.addEventListener('click', (event) => {
-                this.registerInput(key);
-                key.disabled = true;
+        key.forEach(k => {
+            k.addEventListener('click', (event) => {
+                this.registerInput(k);
             });
         });
+
+
 
         document.addEventListener('keydown', (event) => {
             if (this.isAvailable) {
@@ -116,16 +131,12 @@ class Game {
     // and replaces the overlay’s start CSS class with either the win or lose CSS class.
     gameOver(gameWon) {
 
-        // empty the phrase div to make room for a new phrase
-        phraseDiv.innerHTML = '';
+
         winLoseMessage.innerHTML = '';
 
         // show the overlay
         overlayDiv.style.display = 'flex';
         overlayDiv.classList.remove('win', 'lose');
-
-        // reset the heart icons into live hearts
-        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
 
         // based on win or lose add a lose or win class to the main-container
         // also add a message on the overlay if the player won or lost.
@@ -134,14 +145,12 @@ class Game {
             winLoseMessage.innerHTML += `Congrats you win this time! :)`
         } else {
             overlayDiv.classList.add('lose')
-            winLoseMessage.innerHTML += `You lose, better luck next time :(`
+            winLoseMessage.innerHTML +=
+                `You lose, better luck next time :( <br>
+                The phrase was: "${this.phrase.phrase}"`
         }
 
-        key.forEach(key => {
-            key.disabled = false;
-            key.classList.remove('wrong', 'chosen');
-        });
-
-        this.missed = 0;
+        startGameButton.innerHTML = 'Restart Game';
+        this.isAvailable = false;
     }
 }
