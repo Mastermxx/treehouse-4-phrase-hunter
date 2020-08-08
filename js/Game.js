@@ -1,6 +1,11 @@
-/* Treehouse FSJS Techdegree
- * Project 4 - OOP Game App
- * Game.js */
+/******************************************
+ Treehouse FSJS Techdegree:
+ project 4 - OOP Game App
+ Script by Mark Reijgwart
+ I am aiming for a "Exceeds Expectations" grade.
+ If I don't get this grade I would like to redo it.
+ ******************************************/
+
 const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
 const key = document.querySelectorAll('.key');
@@ -12,7 +17,7 @@ class Game {
         this.missed = 0;
         this.phrases = this.createPhrases();
         this.activePhrase = null;
-        this.isAvailable = false;
+        this.isAvailable = false; // Disables physical keyboard
     }
 
      // * Creates phrases for use in game
@@ -29,30 +34,29 @@ class Game {
 
     // * Begins game by selecting a random phrase and displaying it to user
     startGame() {
-        this.isAvailable = true;
+        this.isAvailable = true; // Make physical keyboard available
         this.missed = 0;
 
-        // empty the phrase div to make room for a new phrase
-        phraseDiv.innerHTML = '';
+        phraseDiv.innerHTML = ''; // Empty the phrase div to make room for a new phrase.
+        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png'); // Reset the heart icons into live hearts.
 
-        // reset the heart icons into live hearts
-        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png');
-
+        // Remove added classes and remove disabled from buttons.
         key.forEach(k => {
             k.disabled = false;
             k.classList.remove('wrong', 'chosen');
         });
 
-        // hides the start screen overlay
-        overlayDiv.style.display = 'none';
+        overlayDiv.style.display = 'none'; // Hides the start screen overlay
         // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         this.activePhrase = this.getRandomPhrase();
         // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
         this.phrase = new Phrase(this.activePhrase);
         this.phrase.addPhraseToDisplay();
-        console.log(this.phrase)
     };
 
+    // Added this function to register both inputs from onscreen & physical key.
+    // If the input (letter) is in the phrase: Show letter on display,give it a class "chosen" and checkForWin().
+    // Else removeLife() and give it a class "wrong"
     registerInput(input) {
         const letter = input.innerHTML
         if (this.phrase.checkLetter(letter)) {
@@ -63,25 +67,22 @@ class Game {
             input.classList.add('wrong');
             this.removeLife();
         }
-        input.disabled = true;
+        input.disabled = true; // Disable the selected letter’s onscreen keyboard button.
     }
 
-    // this method controls most of the game logic. It checks to see if the button clicked by the player matches a letter in the phrase,
-    // and then directs the game based on a correct or incorrect guess. This method should:
-    // Disable the selected letter’s onscreen keyboard button.
-    // If the phrase does not include the guessed letter, add the wrong CSS class to the selected letter's keyboard button and call the removeLife() method.
-    // If the phrase includes the guessed letter, add the chosen CSS class to the selected letter's keyboard button,
-    // call the showMatchedLetter() method on the phrase, and then call the checkForWin() method.
-    // If the player has won the game, also call the gameOver() method.
     handleInteraction() {
+
+        // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
         key.forEach(k => {
             k.addEventListener('click', (event) => {
                 this.registerInput(k);
             });
         });
 
-
-
+        // For press on the physical keyboard add event listener.
+        // The input will be for example: "keyR" so I remove key from the string and make it lowercase.
+        // So it can be compared like the onscreen keyboard keys.
+        // On keydown send input to registerInput().
         document.addEventListener('keydown', (event) => {
             if (this.isAvailable) {
 
@@ -118,9 +119,9 @@ class Game {
         const shownLetters = document.querySelectorAll('.show');
         const spaces = document.querySelectorAll('.space');
         const phraseLength = this.activePhrase.length;
-
         const gameWon = phraseLength === shownLetters.length + spaces.length;
 
+        // If length of phrase is the same a length of shown letters + amount of spaces, the game is won.
         if (phraseLength === shownLetters.length + spaces.length) {
             this.gameOver(gameWon)
         }
@@ -130,10 +131,8 @@ class Game {
     // updates the overlay h1 element with a friendly win or loss message,
     // and replaces the overlay’s start CSS class with either the win or lose CSS class.
     gameOver(gameWon) {
-
-
+        // Reset the win or lose message
         winLoseMessage.innerHTML = '';
-
         // show the overlay
         overlayDiv.style.display = 'flex';
         overlayDiv.classList.remove('win', 'lose');
@@ -149,8 +148,8 @@ class Game {
                 `You lose, better luck next time :( <br>
                 The phrase was: "${this.phrase.phrase}"`
         }
-
         startGameButton.innerHTML = 'Restart Game';
-        this.isAvailable = false;
+
+        this.isAvailable = false; // Disables physical keyboard
     }
 }
