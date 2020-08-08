@@ -1,7 +1,10 @@
-/* Treehouse FSJS Techdegre
- * Project 4 - OOP Game App
- * Phrase.js */
-console.log('Phrase.js is loaded');
+/******************************************
+ Treehouse FSJS Techdegree:
+ project 4 - OOP Game App
+ Script by Mark Reijgwart
+ I am aiming for a "Exceeds Expectations" grade.
+ If I don't get this grade I would like to redo it.
+ ******************************************/
 
 const phraseDiv = document.querySelector('ul');
 
@@ -11,8 +14,9 @@ class Phrase {
         this.chars = this.phrase.split('');
     }
 
-    // done - this adds letter placeholders to the display when the game starts.
-    // done - Each letter is presented by an empty box, one li element for each letter.
+    // For every character in the phrase add a list item to the DOM.
+    // Add the classes "hide" "letter" and "current character" and also the current character as innerHTML.
+    // For every space in a phrase at a list item with a "space" class.
     addPhraseToDisplay() {
         this.chars
             .map((char) => {
@@ -21,7 +25,7 @@ class Phrase {
             })
     }
 
-    // * Checks if passed letter is in phrase
+    // * Checks if passed letter is in the phrase
     // * @param (string) letter - Letter to check
     // * @return {boolean} True if letter is in phrase
     checkLetter(input) {
