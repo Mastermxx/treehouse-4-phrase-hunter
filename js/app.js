@@ -1,13 +1,14 @@
-/* Treehouse FSJS Techdegree
- * Project 4 - OOP Game App
- * app.js */
-console.log('app.js is loaded');
+/******************************************
+ Treehouse FSJS Techdegree:
+ project 4 - OOP Game App
+ Script by Mark Reijgwart
+ I am aiming for a "Exceeds Expectations" grade.
+ If I don't get this grade I would like to redo it.
+ ******************************************/
 
-const startGameButton = document.querySelector('#btn__reset')
-
+const game = new Game();
 startGameButton.addEventListener('click', function() {
-    const game = new Game(0);
     game.startGame();
-    game.handleInteraction();
 })
+game.handleInteraction();
 
