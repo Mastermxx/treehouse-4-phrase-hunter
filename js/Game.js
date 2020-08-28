@@ -8,6 +8,7 @@
 
 const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
+const qwerty = document.querySelector('#qwerty');
 const key = document.querySelectorAll('.key');
 const winLoseMessage = document.querySelector('#game-over-message');
 const startGameButton = document.querySelector('#btn__reset')
@@ -18,12 +19,17 @@ class Game {
         this.phrases = this.createPhrases();
         this.activePhrase = null;
         this.isAvailable = false; // Disables physical keyboard
+        this.clickHandler = (event) => {
+            this.registerInput(event.target.closest('button').innerHTML);
+        }
     }
 
      // * Creates phrases for use in game
      // * @return {array} An array of phrases that could be used in the game
     createPhrases() {
-        return ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest'];
+        const phrases = ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest']
+        const phraseObjects = phrases.map(phrase => new Phrase(phrase))
+        return phraseObjects
     };
 
     // this method randomly retrieves one of the phrases stored in the phrases array and returns it.
@@ -36,7 +42,7 @@ class Game {
     startGame() {
         this.isAvailable = true; // Make physical keyboard available
         this.missed = 0;
-
+        qwerty.removeEventListener('click', this.clickHandler)
         phraseDiv.innerHTML = ''; // Empty the phrase div to make room for a new phrase.
         heartIcons.forEach(heart => heart.src = 'images/liveHeart.png'); // Reset the heart icons into live hearts.
 
@@ -50,65 +56,45 @@ class Game {
         // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         this.activePhrase = this.getRandomPhrase();
         // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
-        this.phrase = new Phrase(this.activePhrase);
-        this.phrase.addPhraseToDisplay();
+        this.activePhrase.addPhraseToDisplay();
     };
 
     // Added this function to register both inputs from onscreen & physical key.
     // If the input (letter) is in the phrase: Show letter on display,give it a class "chosen" and checkForWin().
     // Else removeLife() and give it a class "wrong"
     registerInput(input) {
-        const letter = input.innerHTML
-        if (this.phrase.checkLetter(letter)) {
-            this.phrase.showMatchedLetter(letter);
-            input.classList.add('chosen');
-            this.checkForWin()
-        } else {
-            input.classList.add('wrong');
-            this.removeLife();
-        }
-        input.disabled = true; // Disable the selected letter’s onscreen keyboard button.
+        const allKeys = Array.from(key);
+        const keyElement = allKeys.find(k => k.innerHTML === input);
+        const letter = keyElement.innerHTML
+
+        if (keyElement.disabled === false) {
+            if (this.activePhrase.checkLetter(letter)) {
+                this.activePhrase.showMatchedLetter(letter);
+                keyElement.classList.add('chosen');
+                this.checkForWin()
+            } else {
+                keyElement.classList.add('wrong');
+                this.removeLife();
+            }
+            keyElement.disabled = true; // Disable the selected letter’s onscreen keyboard button.
+         }
     }
 
+    // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
     handleInteraction() {
-
-        // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
-        key.forEach(k => {
-            k.addEventListener('click', (event) => {
-                this.registerInput(k);
-            });
-        });
-
-        // For press on the physical keyboard add event listener.
-        // The input will be for example: "keyR" so I remove key from the string and make it lowercase.
-        // So it can be compared like the onscreen keyboard keys.
-        // On keydown send input to registerInput().
-        document.addEventListener('keydown', (event) => {
-            if (this.isAvailable) {
-
-                const string = event.code;
-                const currentKey = string.toLowerCase().slice(3);
-                const regex = /[a-z]/g;
-
-                if (currentKey.match(regex) && string.length === 4) {
-                    const allKeys = Array.from(key);
-                    const keyElement = allKeys.find(k => k.innerHTML === currentKey);
-                    this.registerInput(keyElement);
-                }
-            }
-        });
-
+        qwerty.addEventListener('click', this.clickHandler)
     };
 
     // * Increases the value of the missed property
     // * Removes a life from the scoreboard
     // * Checks if player has remaining lives and ends game if player is out
     removeLife() {
-        if (this.missed === 4){
+        console.log(this.missed)
+        heartIcons[this.missed].src = 'images/lostHeart.png';
+        this.missed += 1;
+
+        if (this.missed === 5) {
             this.gameOver();
-        } else {
-            heartIcons[this.missed].src = 'images/lostHeart.png';
-            this.missed += 1;
         }
     };
 
@@ -146,7 +132,7 @@ class Game {
             overlayDiv.classList.add('lose')
             winLoseMessage.innerHTML +=
                 `You lose, better luck next time :( <br>
-                The phrase was: "${this.phrase.phrase}"`
+                The phrase was: "${this.activePhrase.phrase}"`
         }
         startGameButton.innerHTML = 'Restart Game';
 
