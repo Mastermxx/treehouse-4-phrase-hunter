@@ -58,6 +58,7 @@ class Game {
     // If the input (letter) is in the phrase: Show letter on display,give it a class "chosen" and checkForWin().
     // Else removeLife() and give it a class "wrong"
     registerInput(input) {
+        // console.log(input)
         const letter = input.innerHTML
         if (this.phrase.checkLetter(letter)) {
             this.phrase.showMatchedLetter(letter);
@@ -71,29 +72,12 @@ class Game {
     }
 
     handleInteraction() {
-
         // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
         key.forEach(k => {
             k.addEventListener('click', (event) => {
                 this.registerInput(k);
             });
         });
-
-        document.addEventListener('keydown', (event) => {
-            if (this.isAvailable) {
-
-                const string = event.code;
-                const currentKey = string.toLowerCase().slice(3);
-                const regex = /[a-z]/g;
-
-                if (currentKey.match(regex) && string.length === 4) {
-                    const allKeys = Array.from(key);
-                    const keyElement = allKeys.find(k => k.innerHTML === currentKey);
-                    this.registerInput(keyElement);
-                }
-            }
-        });
-
     };
 
     // * Increases the value of the missed property
