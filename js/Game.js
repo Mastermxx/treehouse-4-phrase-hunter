@@ -19,8 +19,21 @@ class Game {
         this.phrases = this.createPhrases();
         this.activePhrase = null;
         this.isAvailable = false; // Disables physical keyboard
+
+        // For keydown & click on the keyboard add event listener.
+        // So it can be compared like the keyboard keys.
+        // On keydown & click send input to registerInput().
         this.clickHandler = (event) => {
-            this.registerInput(event.target.closest('button').innerHTML);
+            const button = event.target.closest('button');
+            if (button) this.registerInput(button.innerHTML);
+        }
+        this.keyboardHandler = (event) => {
+            if (this.isAvailable) {
+                const currentKey = event.key;
+                const regex = /[a-z]/g;
+                if (currentKey.match(regex) && currentKey.length === 1)
+                    this.registerInput(currentKey);
+            }
         }
     }
 
@@ -42,7 +55,6 @@ class Game {
     startGame() {
         this.isAvailable = true; // Make physical keyboard available
         this.missed = 0;
-        qwerty.removeEventListener('click', this.clickHandler)
         phraseDiv.innerHTML = ''; // Empty the phrase div to make room for a new phrase.
         heartIcons.forEach(heart => heart.src = 'images/liveHeart.png'); // Reset the heart icons into live hearts.
 
@@ -60,7 +72,7 @@ class Game {
     };
 
     // Added this function to register both inputs from onscreen & physical key.
-    // If the input (letter) is in the phrase: Show letter on display,give it a class "chosen" and checkForWin().
+    // If the input (letter) is in the phrase: Show letter on display, give it a class "chosen" and checkForWin().
     // Else removeLife() and give it a class "wrong"
     registerInput(input) {
         const allKeys = Array.from(key);
@@ -83,21 +95,17 @@ class Game {
     // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
     handleInteraction() {
         qwerty.addEventListener('click', this.clickHandler)
+        document.addEventListener('keydown', this.keyboardHandler);
     };
 
     // * Increases the value of the missed property
     // * Removes a life from the scoreboard
     // * Checks if player has remaining lives and ends game if player is out
     removeLife() {
-        console.log(this.missed)
         heartIcons[this.missed].src = 'images/lostHeart.png';
         this.missed += 1;
-
-        if (this.missed === 5) {
-            this.gameOver();
-        }
+        if (this.missed === 5) this.gameOver();
     };
-
 
     // * Checks for winning move
     // * @return {boolean} True if game has been won, false if game wasn't won
@@ -108,9 +116,7 @@ class Game {
         const gameWon = phraseLength === shownLetters.length + spaces.length;
 
         // If length of phrase is the same a length of shown letters + amount of spaces, the game is won.
-        if (phraseLength === shownLetters.length + spaces.length) {
-            this.gameOver(gameWon)
-        }
+        if (gameWon) this.gameOver(gameWon);
     }
 
     // this method displays the original start screen overlay, and depending on the outcome of the game,
@@ -137,5 +143,8 @@ class Game {
         startGameButton.innerHTML = 'Restart Game';
 
         this.isAvailable = false; // Disables physical keyboard
+
+        qwerty.removeEventListener('click', this.clickHandler)
+        document.removeEventListener('keydown', this.keyboardHandler)
     }
 }
