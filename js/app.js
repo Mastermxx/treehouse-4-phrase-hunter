@@ -9,12 +9,14 @@
 let game;
 
 function clickHandler(event){
-    const btn = event.target.closest('button')
-    if(btn) game.handleInteraction(btn)
+    if(game && game.isAvailable) {
+        const btn = event.target.closest('button')
+        if (btn) game.handleInteraction(btn)
+    }
 }
 
 function keydownHandler(event){
-    if(game.isAvailable){
+    if(game && game.isAvailable){
         const currentKey = event.key;
         const regex = /[a-z]/g;
 
