@@ -16,3 +16,5 @@ Script by Mark Reijgwart
 - Changed the onscreen keyboard into round buttons.
 - Gave the onscreen keys hover state.
 - I'd like to only use my ID's for javascript and classes for styling. So I replaced all the ID styling by classes.
+- Removed the default button active outline state.
+- On the body I added "ser-select: none;". So people can't cheat.
