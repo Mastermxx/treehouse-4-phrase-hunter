@@ -9,9 +9,10 @@
 const overlayDiv = document.querySelector('#overlay')
 const heartIcons = document.querySelectorAll('img');
 const qwerty = document.querySelector('#qwerty');
-const key = document.querySelectorAll('.key');
+const keys = Array.from(document.querySelectorAll('.key'));
 const winLoseMessage = document.querySelector('#game-over-message');
 const startGameButton = document.querySelector('#btn__reset')
+const phrases = ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest']
 
 class Game {
     constructor() {
@@ -19,31 +20,11 @@ class Game {
         this.phrases = this.createPhrases();
         this.activePhrase = null;
         this.isAvailable = false; // Disables physical keyboard
-
-        // For keydown & click on the keyboard add event listener.
-        // So it can be compared like the keyboard keys.
-        // On keydown & click send input to registerInput().
-        this.clickHandler = (event) => {
-            const button = event.target.closest('button');
-            if (button) this.registerInput(button.innerHTML);
-        }
-        this.keyboardHandler = (event) => {
-            if (this.isAvailable) {
-                const currentKey = event.key;
-                const regex = /[a-z]/g;
-                if (currentKey.match(regex) && currentKey.length === 1)
-                    this.registerInput(currentKey);
-            }
-        }
     }
 
-     // * Creates phrases for use in game
-     // * @return {array} An array of phrases that could be used in the game
-    createPhrases() {
-        const phrases = ['produce', 'you are pretty', 'wrong', 'monkey', 'something else', 'material', 'party', 'century', 'greatest']
-        const phraseObjects = phrases.map(phrase => new Phrase(phrase))
-        return phraseObjects
-    };
+    // * Creates phrases for use in game
+    // * @return {array} An array of phrases that could be used in the game
+    createPhrases() { return phrases.map(phrase => new Phrase(phrase)) }
 
     // this method randomly retrieves one of the phrases stored in the phrases array and returns it.
     getRandomPhrase() {
@@ -53,49 +34,41 @@ class Game {
 
     // * Begins game by selecting a random phrase and displaying it to user
     startGame() {
-        this.isAvailable = true; // Make physical keyboard available
-        this.missed = 0;
         phraseDiv.innerHTML = ''; // Empty the phrase div to make room for a new phrase.
-        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png'); // Reset the heart icons into live hearts.
 
         // Remove added classes and remove disabled from buttons.
-        key.forEach(k => {
-            k.disabled = false;
-            k.classList.remove('wrong', 'chosen');
+        keys.forEach(key => {
+            key.disabled = false;
+            key.classList.remove('wrong', 'chosen');
         });
 
+        heartIcons.forEach(heart => heart.src = 'images/liveHeart.png'); // Reset the heart icons into live hearts.
+
         overlayDiv.style.display = 'none'; // Hides the start screen overlay
+
+
         // calls the getRandomPhrase() method, and sets the activePhrase property with the chosen phrase.
         this.activePhrase = this.getRandomPhrase();
         // It also adds that phrase to the board by calling the addPhraseToDisplay() method on the active Phrase object.
         this.activePhrase.addPhraseToDisplay();
+
+        this.isAvailable = true; // Enable physical keyboard
     };
 
-    // Added this function to register both inputs from onscreen & physical key.
-    // If the input (letter) is in the phrase: Show letter on display, give it a class "chosen" and checkForWin().
-    // Else removeLife() and give it a class "wrong"
-    registerInput(input) {
-        const allKeys = Array.from(key);
-        const keyElement = allKeys.find(k => k.innerHTML === input);
-        const letter = keyElement.innerHTML
-
-        if (keyElement.disabled === false) {
+    // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
+    handleInteraction(button) {
+        const letter = button.innerHTML
+        if (button.disabled === false) {
+            button.disabled = true; // Disable the selected letter’s onscreen keyboard button.
             if (this.activePhrase.checkLetter(letter)) {
+                button.classList.add('chosen');
                 this.activePhrase.showMatchedLetter(letter);
-                keyElement.classList.add('chosen');
-                this.checkForWin()
+                if(this.checkForWin()) this.gameOver(true)
             } else {
-                keyElement.classList.add('wrong');
+                button.classList.add('wrong');
                 this.removeLife();
             }
-            keyElement.disabled = true; // Disable the selected letter’s onscreen keyboard button.
-         }
-    }
-
-    // For every key on the onscreen keyboard add event listener. On click send input to registerInput().
-    handleInteraction() {
-        qwerty.addEventListener('click', this.clickHandler)
-        document.addEventListener('keydown', this.keyboardHandler);
+        }
     };
 
     // * Increases the value of the missed property
@@ -104,7 +77,10 @@ class Game {
     removeLife() {
         heartIcons[this.missed].src = 'images/lostHeart.png';
         this.missed += 1;
-        if (this.missed === 5) this.gameOver();
+
+        if (this.missed === 5) {
+            this.gameOver();
+        }
     };
 
     // * Checks for winning move
@@ -112,11 +88,7 @@ class Game {
     checkForWin() {
         const shownLetters = document.querySelectorAll('.show');
         const spaces = document.querySelectorAll('.space');
-        const phraseLength = this.activePhrase.length;
-        const gameWon = phraseLength === shownLetters.length + spaces.length;
-
-        // If length of phrase is the same a length of shown letters + amount of spaces, the game is won.
-        if (gameWon) this.gameOver(gameWon);
+        return this.activePhrase.phrase.length === shownLetters.length + spaces.length;
     }
 
     // this method displays the original start screen overlay, and depending on the outcome of the game,
@@ -133,18 +105,14 @@ class Game {
         // also add a message on the overlay if the player won or lost.
         if (gameWon) {
             overlayDiv.classList.add('win')
-            winLoseMessage.innerHTML += `Congrats you win this time! :)`
+            winLoseMessage.innerHTML += `Congrats you win this time! 😁`
         } else {
             overlayDiv.classList.add('lose')
             winLoseMessage.innerHTML +=
-                `You lose, better luck next time :( <br>
+                `You lose, better luck next time 😢 <br>
                 The phrase was: "${this.activePhrase.phrase}"`
         }
         startGameButton.innerHTML = 'Restart Game';
-
         this.isAvailable = false; // Disables physical keyboard
-
-        qwerty.removeEventListener('click', this.clickHandler)
-        document.removeEventListener('keydown', this.keyboardHandler)
     }
 }
