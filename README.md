@@ -17,4 +17,4 @@ Script by Mark Reijgwart
 - Gave the onscreen keys hover state.
 - I'd like to only use my ID's for javascript and classes for styling. So I replaced all the ID styling by classes.
 - Removed the default button active outline state.
-- On the body I added "ser-select: none;". So people can't cheat.
+- On the body I added "user-select: none;". So people can't cheat.
